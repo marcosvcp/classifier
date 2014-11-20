@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<project name="antsimple" default="dist" basedir=".">
+    <property name="ant.project.name" value="antsimple"/>
+    <property name="main_class_name" value="com.classifier.ImagesSetup"/>
+    <property name="jarname" value="${ant.project.name}"/>
+    <property name="src" location="src"/>
+    <property name="test" location="test"/>
+    <property name="build" location="build"/>
+    <property name="dist" location="dist"/>
+    <property name="lib" location="lib"/>
+
+    <path id="project.classpath">
+        <pathelement location="${build}"/>
+        <pathelement location="${lib}"/>
+    </path>
+    <target name="init">
+        <tstamp/>
+        <mkdir dir="${src}"/>
+        <mkdir dir="${test}"/>
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+    <target name="compile" depends="init" description="compile the source ">
+        <javac debug="true"
+               srcdir="${src}"
+               destdir="${build}"
+               classpathref="project.classpath">
+        <classpath>
+            <pathelement path="lib/weka.jar"/>
+        </classpath>
+        </javac>
+        <copy todir="${build}">
+            <fileset dir="${src}">
+                <exclude name="**/*.java"/>
+            </fileset>
+            <fileset dir="${lib}">
+                <include name="**/*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+    <manifestclasspath property="jar.classpath" jarfile="${jarname}.jar">
+        <classpath>
+            <fileset dir="lib" includes="*.jar"/>
+        </classpath>
+    </manifestclasspath>
+    <target name="dist" depends="compile" description="generate the distribution">
+        <jar jarfile="${dist}/${jarname}.jar" basedir="${build}">
+            <zipgroupfileset dir="lib" includes="weka.jar" />
+            <manifest>
+                <attribute name="Main-Class"
+                           value="${main_class_name}"/>
+            </manifest>
+        </jar>
+        <copy file="${dist}/${jarname}.jar" tofile="./${jarname}.jar" overwrite="true"/>
+    </target>
+
+    <target name="clean"
+            description="clean up">
+        <delete dir="${build}"/>
+    </target>
+</project>

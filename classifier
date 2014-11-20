@@ -1,0 +1,34 @@
+#!/bin/bash
+usage() {
+    echo -e 'Tecnicas possiveis: \n '
+    echo -e '>>> NaiveBayes'
+    echo -e '>>> Bagging'
+    echo -e '>>> DecisionStump'
+    echo -e '>>> ClassificationViaRegression'
+    echo -e '>>> CostSensitiveClassifier'
+}
+if [ -z "$1" ] ; then
+    usage
+fi
+
+function run() {
+    java -jar dist/antsimple.jar $1 $2 $3
+}
+
+while getopts "hv" arg; do
+  case $arg in
+    h)
+      usage
+      exit 0
+      ;;
+    v)
+      java -jar dist/antsimple.jar "true" "$2" "$3" "$4"
+      exit 0
+      ;;
+    *)
+      echo -e '>>> $arg Opção inválida'
+      exit 0
+      ;;
+  esac
+done
+java -jar dist/antsimple.jar "false" "$1" "$2" "$3"
